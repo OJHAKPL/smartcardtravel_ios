@@ -45,10 +45,16 @@
 	
 	function pushNotify() {
 		//alert('push');
-		var push = PushNotification.init({ 
-		 "android": 
-		 {"senderID": "48866309941"}
-          } );
+		
+		var push = PushNotification.init({
+            "ios": {
+				"alert": true,
+				"sound": true,
+				"vibration": true,
+				"badge": true,
+				"clearBadge": true
+            }
+        });
 
 		push.on('registration', function(data) {
 			var loginid='';
@@ -137,7 +143,7 @@
 						} else {
 							localStorage.setItem('userid-travel-2', field.id);
 						}
-						pushNotify();
+						//pushNotify();
 						cardlist();
 					} else {
 						if(dataArray.error){
@@ -525,30 +531,75 @@
 				error.appendTo(element.parent().add());
 			},
 			submitHandler:function (form) {
-				var push_response = pushConfirm();
-				card_id = jQuery('#editcard').find('input[name="id"]').val();
-				$.ajax({
-					type: 'POST',
-					url: webservice_url+'web-update-card/'+card_id+'/'+push_response,
-					beforeSend: function(){
-						$('.loader_useredit').show();
-					},
-					complete: function(){
-						$('.loader_useredit').hide();
-					},
-					data : $('#editcard').serialize(),
-					success: function(updateCard){ 
-						var dataMsg = jQuery.parseJSON(updateCard);	
-						if(dataMsg.error){
-							showAlert(dataMsg.error);
+				
+				//var push_response = pushConfirm();
+				
+				$.confirm({
+					'title'		: 'Smartcard Travel',
+					'message'	: 'Do you want to send push notifications for this update?',
+					'buttons'	: {
+						'Yes'	: {
+							'class'	: 'blue',
+							'action': function() {
+								push_response = 1;
+								card_id = jQuery('#editcard').find('input[name="id"]').val();
+								$.ajax({
+									type: 'POST',
+									url: webservice_url+'web-update-card/'+card_id+'/'+push_response,
+									beforeSend: function(){
+										$('.loader_useredit').show();
+									},
+									complete: function(){
+										$('.loader_useredit').hide();
+									},
+									data : $('#editcard').serialize(),
+									success: function(updateCard){ 
+										var dataMsg = jQuery.parseJSON(updateCard);	
+										if(dataMsg.error){
+											showAlert(dataMsg.error);
+										}
+										if(dataMsg.success){
+											showAlert(dataMsg.success);
+											cartDetails(card_id);
+										}
+									},
+									dataType: 'html'
+								}); 
+							}
+						},
+						'No'	: {
+							'class'	: 'gray',
+							'action': function(){
+								
+								push_response = 2;
+								card_id = jQuery('#editcard').find('input[name="id"]').val();
+								$.ajax({
+									type: 'POST',
+									url: webservice_url+'web-update-card/'+card_id+'/'+push_response,
+									beforeSend: function(){
+										$('.loader_useredit').show();
+									},
+									complete: function(){
+										$('.loader_useredit').hide();
+									},
+									data : $('#editcard').serialize(),
+									success: function(updateCard){ 
+										var dataMsg = jQuery.parseJSON(updateCard);	
+										if(dataMsg.error){
+											showAlert(dataMsg.error);
+										}
+										if(dataMsg.success){
+											showAlert(dataMsg.success);
+											cartDetails(card_id);
+										}
+									},
+									dataType: 'html'
+								}); 
+								
+							}	
 						}
-						if(dataMsg.success){
-							showAlert(dataMsg.success);
-							cartDetails(card_id);
-						}
-					},
-					dataType: 'html'
-				}); 
+					}
+				});  
 			}
 		});
 	}	
@@ -646,29 +697,73 @@
 				error.appendTo(element.parent().add());
 			},
 			submitHandler:function (form) {
-				var push_response = pushConfirm();
-				$.ajax({
-					type: 'POST',
-					url: webservice_url+'web-update-link/'+push_response,
-					beforeSend: function(){
-						$('.loader_cardlinklist').show();
-					},
-					complete: function(){
-						$('.loader_cardlinklist').hide();
-					},
-					data : $('#editcard_link').serialize(),
-					success: function(updateCard) {
-						var dataMsg = jQuery.parseJSON(updateCard);	
-						if(dataMsg.error){
-							showAlert(dataMsg.error);
+				
+				//var push_response = pushConfirm();
+				
+				$.confirm({
+					'title'		: 'Smartcard Travel',
+					'message'	: 'Do you want to send push notifications for this update?',
+					'buttons'	: {
+						'Yes'	: {
+							'class'	: 'blue',
+							'action': function() {
+								push_response = 1;
+								$.ajax({
+									type: 'POST',
+									url: webservice_url+'web-update-link/'+push_response,
+									beforeSend: function(){
+										$('.loader_cardlinklist').show();
+									},
+									complete: function(){
+										$('.loader_cardlinklist').hide();
+									},
+									data : $('#editcard_link').serialize(),
+									success: function(updateCard) {
+										var dataMsg = jQuery.parseJSON(updateCard);	
+										if(dataMsg.error){
+											showAlert(dataMsg.error);
+										}
+										if(dataMsg.success){
+											showAlert(dataMsg.success);
+											cartDetails(card_id);
+										}
+									},
+									dataType: 'html'
+								}); 
+							}
+						},
+						'No'	: {
+							'class'	: 'gray',
+							'action': function() {
+								
+								push_response = 2;
+								$.ajax({
+									type: 'POST',
+									url: webservice_url+'web-update-link/'+push_response,
+									beforeSend: function(){
+										$('.loader_cardlinklist').show();
+									},
+									complete: function(){
+										$('.loader_cardlinklist').hide();
+									},
+									data : $('#editcard_link').serialize(),
+									success: function(updateCard) {
+										var dataMsg = jQuery.parseJSON(updateCard);	
+										if(dataMsg.error){
+											showAlert(dataMsg.error);
+										}
+										if(dataMsg.success){
+											showAlert(dataMsg.success);
+											cartDetails(card_id);
+										}
+									},
+									dataType: 'html'
+								});
+								
+							}	
 						}
-						if(dataMsg.success){
-							showAlert(dataMsg.success);
-							cartDetails(card_id);
-						}
-					},
-					dataType: 'html'
-				});
+					}
+				}); 
 			}
 		});
 	}  	
@@ -680,12 +775,7 @@
 	
 	function onBackKeyDown() {
 		history.go(-1);
-	}
-	
-	
-
-
-	
+	} 
 	
 	
 	/*--------- Edit Scroller -----------*/
@@ -776,31 +866,78 @@
 				error.appendTo(element.parent().add());
 			},
 			submitHandler:function (form) {
-				var push_response = pushConfirm();
-				$.ajax({
-					type: 'POST',
-					url: webservice_url+'web-update-scroller/'+push_response,
-					beforeSend: function(){
-						$('.loader_cardscroller').show();
-					},
-					complete: function(){
-						$('.loader_cardscroller').hide();
-					},
-					data : $('#editcard_scroller').serialize(),
-					success: function(data_get){ 
-						var dataMsg = jQuery.parseJSON(data_get);	
-						if(dataMsg.error){
-							$('.loader_cardscroller').hide();
-							showAlert(dataMsg.error);
+				
+				//var push_response = pushConfirm();
+				
+				$.confirm({
+					'title'		: 'Smartcard Travel',
+					'message'	: 'Do you want to send push notifications for this update?',
+					'buttons'	: {
+						'Yes'	: {
+							'class'	: 'blue',
+							'action': function() {
+								push_response = 1;
+								$.ajax({
+									type: 'POST',
+									url: webservice_url+'web-update-scroller/'+push_response,
+									beforeSend: function(){
+										$('.loader_cardscroller').show();
+									},
+									complete: function(){
+										$('.loader_cardscroller').hide();
+									},
+									data : $('#editcard_scroller').serialize(),
+									success: function(data_get){ 
+										var dataMsg = jQuery.parseJSON(data_get);	
+										if(dataMsg.error){
+											$('.loader_cardscroller').hide();
+											showAlert(dataMsg.error);
+										}
+										if(dataMsg.success){
+											$('.loader_cardscroller').hide();
+											showAlert(dataMsg.success);
+											cartDetails(card_id);
+										}
+									},
+									dataType: 'html'
+								});
+								
+							}
+						},
+						'No'	: {
+							'class'	: 'gray',
+							'action': function(){
+								
+								push_response = 2;
+								$.ajax({
+									type: 'POST',
+									url: webservice_url+'web-update-scroller/'+push_response,
+									beforeSend: function(){
+										$('.loader_cardscroller').show();
+									},
+									complete: function(){
+										$('.loader_cardscroller').hide();
+									},
+									data : $('#editcard_scroller').serialize(),
+									success: function(data_get){ 
+										var dataMsg = jQuery.parseJSON(data_get);	
+										if(dataMsg.error){
+											$('.loader_cardscroller').hide();
+											showAlert(dataMsg.error);
+										}
+										if(dataMsg.success){
+											$('.loader_cardscroller').hide();
+											showAlert(dataMsg.success);
+											cartDetails(card_id);
+										}
+									},
+									dataType: 'html'
+								});
+								
+							}	
 						}
-						if(dataMsg.success){
-							$('.loader_cardscroller').hide();
-							showAlert(dataMsg.success);
-							cartDetails(card_id);
-						}
-					},
-					dataType: 'html'
-				});
+					}
+				}); 
 			}
 		});
 	} 
@@ -1286,30 +1423,43 @@
 	/*---------- Delete Paper Card ---------*/
 	function deletePapercard(paper_card_id) {
 		
-		confirmBox = confirm('Are you sure you want to delete this paper card?');
-		if(confirmBox==true) {
-			$(".paper_card_dev_"+paper_card_id).remove();
-			$.ajax({
-				type: 'POST',
-				url: webservice_url+'web-paper-card-remove',
-				beforeSend: function(){
-					$('.loader_papercard').show();
+		$.confirm({
+			'title'		: 'Smartcard Travel',
+			'message'	: 'Are you sure you want to delete this paper card?',
+			'buttons'	: {
+				'Yes'	: {
+					'class'	: 'blue',
+					'action': function() {
+						$(".paper_card_dev_"+paper_card_id).remove();
+						$.ajax({
+							type: 'POST',
+							url: webservice_url+'web-paper-card-remove',
+							beforeSend: function(){
+								$('.loader_papercard').show();
+							},
+							complete: function(){
+								$('.loader_papercard').hide();
+							},
+							data: { "paper_card_id": paper_card_id },
+							success: function(papercardlist){
+								var papercardlistArr = jQuery.parseJSON(papercardlist);
+								if(!papercardlistArr.error) {
+									showAlert(papercardlistArr.success);
+								} else {
+									showAlert(papercardlistArr.error);
+								}
+							},
+							dataType: 'html'
+						});   
+					}
 				},
-				complete: function(){
-					$('.loader_papercard').hide();
-				},
-				data: { "paper_card_id": paper_card_id },
-				success: function(papercardlist){
-					var papercardlistArr = jQuery.parseJSON(papercardlist);
-					if(!papercardlistArr.error) {
-						showAlert(papercardlistArr.success);
-					} else {
-						showAlert(papercardlistArr.error);
- 					}
-				},
-				dataType: 'html'
-			});
-		}
+				'No'	: {
+					'class'	: 'gray',
+					'action': function(){
+					}	
+				}
+			}
+		}); 
 	}
 	
 	
