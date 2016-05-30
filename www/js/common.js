@@ -21,6 +21,8 @@
 		}
 	
 	}
+	
+	
 	function checkConnection() {
         var networkState = navigator.network.connection.type;
         var states = {};
@@ -58,7 +60,7 @@
 
 		push.on('registration', function(data) {
 			var loginid='';
-			if (localStorage.getItem('userid')){
+			if (localStorage.getItem('userid-travel')){
 				loginid = localStorage.getItem('userid-travel');
 			} else{
 				loginid = localStorage.getItem('userid-travel-2');
@@ -143,7 +145,7 @@
 						} else {
 							localStorage.setItem('userid-travel-2', field.id);
 						}
-						//pushNotify();
+						pushNotify();
 						cardlist();
 					} else {
 						if(dataArray.error){
